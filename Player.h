@@ -3,6 +3,7 @@
 #include <cmath> 
 #include <vector> 
 #include <array> 
+#include "User.h"
 namespace Player 
 {
     enum class SeverityLevel
@@ -17,6 +18,25 @@ namespace Player
         Match,
         Recovery
     };
+    enum class PlayerType
+    {
+        FastBowler,
+        Spinner,
+        Batsman,
+        WicketKeeper,
+        FastAllRounder,
+        SpinAllRounder
+    };
+    class Plan
+    {
+        public:
+        std::string name;
+        std::string description;
+        std::vector<std::string> exercises;
+        std::vector<std::string> drills;
+        std::vector<std::string> matches;
+
+    };
     class Injury
     {
         public:
@@ -25,7 +45,7 @@ namespace Player
         std::string recoveryTime;
         std::string description;
 
-        void getInjuryDetails();
+        void viewPlan();
         void updateInjuryStatus(std::string newStatus);
     };
     class Session
@@ -35,18 +55,20 @@ namespace Player
         std::string duration;
         SessionType type;
         std::string notes;
+        
 
         void getSessionDetails();
         void updateSessionNotes(std::string newNotes);
     };
-    class Player
+    class Player: public User::User
     {
         public:
         std::string name;
         int age;
-        std::string position;
+        PlayerType position;
         std::vector<Session> sessions;
         std::vector<Injury> injuries;
+        Plan trainingPlan;
         
         
         void addSession(Session s);
