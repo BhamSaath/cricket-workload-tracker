@@ -2,6 +2,13 @@
 #include <string> 
 #include <fstream>
 #include "auth.h"
+#include "auth.cpp"
+#include "Player.h"
+#include "Player.cpp"
+#include "Admin.h"
+#include "Admin.cpp"
+#include "Coach.h"
+#include "Coach.cpp"
 void createAccount()
 {
     std::string username, password, role;
@@ -24,6 +31,59 @@ void createAccount()
     {
         std::cerr << "Unable to open file for writing." << std::endl;
     }
+}
+int playerDashboard()
+{
+    int actionChoice = 0; 
+    std::cout << "Welcome to the Player Dashboard!" << std::endl;
+    std::cout<< "What do you want to do?\n 1. View Sessions\n 2. Add Sessions\n 3. View Plan\n 4.Report Injury\n " << std::endl;
+    while (true) {
+        std::cin >> actionChoice;
+        if (std::cin.fail()) {
+            std::cin.clear(); // clear the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+            std::cout << "Invalid input. Please enter an integer: ";
+        } else {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+            break; // valid input, exit the loop
+        }
+    }
+
+    if(actionChoice == 1)
+    {
+        
+    }
+    else if(actionChoice == 2)
+    {
+        
+    }
+    else if(actionChoice == 3)
+    {
+
+    }
+    else if(actionChoice == 4)
+    {
+
+    }
+    else
+    {
+        std::cout << "Invalid choice. Exiting." << std::endl;
+        playerDashboard();
+    }
+    // Here you can add logic to show the player dashboard
+    return 0;
+}
+int coachDashboard()
+{
+    std::cout << "Welcome to the Coach Dashboard!" << std::endl;
+    // Here you can add logic to show the coach dashboard
+    return 0;
+}
+int adminDashboard()
+{
+    std::cout << "Welcome to the Admin Dashboard!" << std::endl;
+    // Here you can add logic to show the admin dashboard
+    return 0;
 }
 int main() {
     int choice;
@@ -51,6 +111,29 @@ int main() {
         else
         {
             std::cout << "Login successful! Role: " << role << std::endl;
+
+            if(role == "player")
+            {
+                std::cout << "Directing to Player Dashboard..." << std::endl;
+                playerDashboard();
+                // Here you can add logic to show the player dashboard
+            }
+            else if(role == "coach")
+            {
+                std::cout << "Directing to Coach Dashboard..." << std::endl;
+                coachDashboard();
+                // Here you can add logic to show the coach dashboard
+            }
+            else if(role == "admin")
+            {
+                std::cout << "Directing to Admin Dashboard..." << std::endl;
+                adminDashboard();
+                // Here you can add logic to show the admin dashboard
+            }
+            else
+            {
+                std::cout << "Unknown role. Exiting." << std::endl;
+            }
             // Here you can add logic to redirect the user based on their role
             // For example, if role is "admin", show admin dashboard, etc.
         }
@@ -58,6 +141,7 @@ int main() {
     else
     {
         std::cout << "Invalid choice. Exiting." << std::endl;
+        main();
     }
     return 0;
 }

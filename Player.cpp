@@ -1,3 +1,4 @@
+
 #include <string> 
 #include <cmath> 
 #include <vector> 
@@ -11,7 +12,7 @@ namespace Player
     void Player::addSession(Session s)
     {
         sessions.push_back(s);
-        
+
     }
     std::string Player::viewSessions()
     {
