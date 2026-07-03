@@ -3,23 +3,21 @@
 #include <cmath> 
 #include <vector> 
 #include <array> 
+#include "json.hpp"
 namespace User
 {
-    
+    using json = nlohmann::json;
     class User
     {
         public:
             std::string username;
-            std::string passwordHash;
             std::string email;
             std::string role; // e.g., "admin", "coach", "player"
-            
-
-            User(std::string uname, std::string pwd, std::string mail, std::string r)
-                : username(uname), passwordHash(pwd), email(mail), role(r) {}
-            virtual void displayProfile() = 0; // Pure virtual function
-            void login();
+            json profileData; // Store additional profile data in JSON format
+            User(std::string uname, std::string mail, std::string r, json data = {})
+                : username(uname), email(mail), role(r) {}
             void logout();
-            void updateProfile(std::string newEmail, std::string newPassword);
+            void updateProfile(std::string newEmail);
+            
     };
 };

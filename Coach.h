@@ -16,8 +16,8 @@ namespace Coach
         std::string name;
         std::vector<Player::Player> players;
         std::string coachID;
-        Coach(std::string uname, std::string pwd, std::string mail, std::string r, std::string n, std::string id)
-            : User(uname, pwd, mail, r), name(n), coachID(id) {}
+        Coach(std::string uname, std::string mail, std::string r, std::string n, std::string id)
+            : User(uname, mail, r), name(n), coachID(id) {}
         void getPlayerDetails(Player::Player p);
         void getSessions(Player::Player p);
         void getPlan(Player::Player p);

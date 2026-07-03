@@ -12,7 +12,8 @@ namespace Admin
     {
          public:
             std::vector<Coach::Coach> coaches;
-            
+            Admin(std::string uname, std::string mail, std::string r)
+                : User(uname, mail, r) {}
             void onboardCoach(Coach::Coach c);
             void removeCoach(Coach::Coach c);
             void manageAPIKeys(); 

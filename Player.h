@@ -4,6 +4,7 @@
 #include <vector> 
 #include <array> 
 #include "User.h"
+#include "json.hpp"
 namespace Player 
 {
     enum class SeverityLevel
@@ -70,9 +71,11 @@ namespace Player
         std::vector<Injury> injuries;
         Plan trainingPlan;
         
-        
+        Player(std::string uname, std::string mail, std::string r, std::string n, int a, PlayerType pos)
+            : User(uname, mail, r), name(n), age(a), position(pos) {}
         void addSession(Session s);
         std::string viewSessions(); 
+        void saveToJson();
         std::string viewPlan();
         void reportInjury(Injury i);
     };

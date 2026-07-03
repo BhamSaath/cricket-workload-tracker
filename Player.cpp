@@ -21,6 +21,10 @@ namespace Player
             std::cout << "Session " << i+1 << ": " << sessions[i].date << ", " << sessions[i].duration << ", " << static_cast<int>(sessions[i].type) << ", " << sessions[i].notes << std::endl;
         }
     }
+    void saveToJson()
+    {
+
+    }
     std::string Player::viewPlan()
     {
         std::cout<< trainingPlan.name<< ": " << trainingPlan.description<< "\n"<< std::endl;

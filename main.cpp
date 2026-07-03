@@ -9,7 +9,7 @@
 #include "Admin.cpp"
 #include "Coach.h"
 #include "Coach.cpp"
-void createAccount()
+std::vector<std::string> createAccount()
 {
     std::string username, password, role;
     std::cout << "Enter username: ";
@@ -31,6 +31,7 @@ void createAccount()
     {
         std::cerr << "Unable to open file for writing." << std::endl;
     }
+    return {role, username};
 }
 int playerDashboard()
 {
@@ -90,9 +91,85 @@ int main() {
     std::cout << "Hello, Cricket Workload Tracker!" << std::endl;
     std::cout << "1. Create Account\n2. Login\n" << std::endl;
     std::cin >> choice;
+
     if(choice == 1)
     {
-        createAccount();
+        std::string role = createAccount()[0];
+        std::string username = createAccount()[1];
+        if(role == "player" )
+            {
+                std::string name;
+                std::cout << "What is your name?" << std::endl;
+                std::cin >> name;
+
+                int age;
+                std::cout << "What is your age?" << std::endl;
+                std::cin >> age;
+
+                std::string position;
+                std::cout << "What is your position? (FastBowler, Spinner, Batsman, WicketKeeper, FastAllRounder, SpinAllRounder)" << std::endl;
+                std::cin >> position;
+
+                Player::PlayerType playerPosition;
+                if(position == "FastBowler")
+                {
+                    playerPosition = Player::PlayerType::FastBowler;
+                }
+                else if(position == "Spinner")
+                {
+                    playerPosition = Player::PlayerType::Spinner;
+                }
+                else if(position == "Batsman")
+                {
+                    playerPosition = Player::PlayerType::Batsman;
+                }
+                else if(position == "WicketKeeper")
+                {
+                    playerPosition = Player::PlayerType::WicketKeeper;
+                }
+                else if(position == "FastAllRounder")
+                {
+                    playerPosition = Player::PlayerType::FastAllRounder;
+                }
+                else if(position == "SpinAllRounder")
+                {
+                    playerPosition = Player::PlayerType::SpinAllRounder;
+                }
+                else
+                {
+                    std::cout << "Invalid position. Exiting." << std::endl;
+                    return 0;
+                }
+                Player::Player Player(username, username + "@example.com", role, name, age, playerPosition);
+
+                playerDashboard();
+                // Here you can add logic to show the player dashboard
+            }
+        else if(role == "coach")
+            {
+                std::string name;
+                std::cout << "What is your name?" << std::endl;
+                std::cin >> name;
+
+                std::string coachID = "C" + std::to_string(rand() % 10000); // Generate a random coach ID
+
+                Coach::Coach Coach(username, username + "@example.com", role, name, coachID);
+
+                coachDashboard();
+                // Here you can add logic to show the coach dashboard
+            }
+            else if(role == "admin" )
+            {
+                Admin::Admin Admin(username, username + "@example.com", role);
+
+                adminDashboard();
+                // Here you can add logic to show the admin dashboard
+            }
+            else
+            {
+                std::cout << "Invalid role. Exiting." << std::endl;
+                return 0;
+            }
     }
     else if(choice == 2)
     {
@@ -112,13 +189,13 @@ int main() {
         {
             std::cout << "Login successful! Role: " << role << std::endl;
 
-            if(role == "player")
+            if(role == "player" )
             {
                 std::cout << "Directing to Player Dashboard..." << std::endl;
                 playerDashboard();
                 // Here you can add logic to show the player dashboard
             }
-            else if(role == "coach")
+            else if(role == "coach" )
             {
                 std::cout << "Directing to Coach Dashboard..." << std::endl;
                 coachDashboard();
