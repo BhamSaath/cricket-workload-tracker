@@ -24,7 +24,6 @@ namespace User
             void setEmail(std::string mail) { email = mail; }
             void setRole(std::string r) { role = r; }
             void logout();
-            void updateProfile(std::string newEmail);
         private:
             std::string username;
             std::string email;

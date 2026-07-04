@@ -118,6 +118,7 @@ namespace Player
         void readFromJson();
         void viewPlan();
         void reportInjury(Injury i);
+        void viewInjuries();
 
         private:
         std::string name;

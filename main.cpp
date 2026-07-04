@@ -30,11 +30,11 @@ std::vector<std::string> createAccount()
     }
     return {role, username};
 }
-int playerDashboard()
+int playerDashboard(Player::Player p)
 {
     int actionChoice = 0; 
     std::cout << "Welcome to the Player Dashboard!" << std::endl;
-    std::cout<< "What do you want to do?\n 1. View Sessions\n 2. Add Sessions\n 3. View Plan\n 4.Report Injury\n " << std::endl;
+    std::cout<< "What do you want to do?\n 1. View Sessions\n 2. Add Sessions\n 3. View Plan\n 4.Report Injury\n 5.View Injuries 6.See Profile" << std::endl;
     while (true) {
         std::cin >> actionChoice;
         if (std::cin.fail()) {
@@ -49,38 +49,381 @@ int playerDashboard()
 
     if(actionChoice == 1)
     {
-        
+        p.viewSessions();
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            playerDashboard(p);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
     }
     else if(actionChoice == 2)
     {
-        
+        Player::Session s;
+        std::cout << "Enter session date (YYYY-MM-DD): ";
+        std::cin >> s.date;
+        std::cout << "Enter session duration (e.g., 2 hours): ";
+        std::cin >> s.duration;
+        int sessionTypeChoice;
+        std::cout << "Enter session type (0: Training, 1: Match, 2: Recovery): ";
+        while (true) {
+            std::cin >> sessionTypeChoice;
+            if (std::cin.fail() || sessionTypeChoice < 0 || sessionTypeChoice > 2) {
+                std::cin.clear(); // clear the error flag
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                std::cout << "Invalid input. Please enter 0, 1, or 2: ";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+                break; // valid input, exit the loop
+            }
+        }
+        s.type = static_cast<Player::SessionType>(sessionTypeChoice);
+        std::cout << "Enter session notes: ";
+        std::getline(std::cin, s.notes);
+        p.addSession(s);
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            playerDashboard(p);
+
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
     }
     else if(actionChoice == 3)
     {
+        p.viewPlan();
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            playerDashboard(p);
 
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
     }
     else if(actionChoice == 4)
     {
+        Player::Injury i;
+        std::cout << "Enter injury type: ";
+        std::cin >> i.type;
+        int severityChoice;
+        std::cout << "Enter injury severity (0: Mild, 1: Moderate, 2: Severe): ";
+        while (true) {
+            std::cin >> severityChoice;
+            if (std::cin.fail() || severityChoice < 0 || severityChoice > 2) {
+                std::cin.clear(); // clear the error flag
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                std::cout << "Invalid input. Please enter 0, 1, or 2: ";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+                break; // valid input, exit the loop
+            }
+        }
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            playerDashboard(p);
 
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+    }
+    else if(actionChoice == 5)
+    {
+        p.viewInjuries();
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            playerDashboard(p);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+    }
+    else if(actionChoice == 6)
+    {
+        std::cout<< "Player Name: " << p.getName() << "\n" << "Player Age: "<< p.getAge()<<"\n"<<"Player Position: "<< p.getPosition()<<std::endl;
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            playerDashboard(p);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
     }
     else
     {
-        std::cout << "Invalid choice. Exiting." << std::endl;
-        playerDashboard();
+        std::cout << "Invalid choice. Exitng." << std::endl;
+        playerDashboard(p);
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            playerDashboard(p);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
     }
     // Here you can add logic to show the player dashboard
     return 0;
 }
-int coachDashboard()
+int coachDashboard(Coach::Coach c)
 {
     std::cout << "Welcome to the Coach Dashboard!" << std::endl;
     // Here you can add logic to show the coach dashboard
-    return 0;
-}
-int adminDashboard()
-{
-    std::cout << "Welcome to the Admin Dashboard!" << std::endl;
-    // Here you can add logic to show the admin dashboard
+    int choice;
+    std::cout<< "What do you want to do?\n 1. View Player Details\n 2. View Player Sessions\n 3. View Player Plan\n 4. Mangage Player Plan 5. Remove Player" << std::endl;
+    std::cin >> choice;
+    if(choice == 1)
+    {
+        std::cout<< "Which Player do you want to view?";
+        for(size_t i = 0; i < c.getPlayers().size(); i++)
+        {
+            std::cout << i+1 << ". " << c.getPlayers()[i].getName() << std::endl;
+        }
+        int playerChoice;
+        while (true) {
+            std::cin >> playerChoice;
+            if (std::cin.fail() || playerChoice < 1 || playerChoice > c.getPlayers().size()) {
+                std::cin.clear(); // clear the error flag
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                std::cout << "Invalid input. Please enter a valid player number: ";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+                break; // valid input, exit the loop
+            }
+        }
+        Player::Player selectedPlayer = c.getPlayers()[playerChoice - 1];
+        c.getPlayerDetails(selectedPlayer);
+
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            coachDashboard(c);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+    }
+    else if(choice == 2)
+    {
+        std::cout<< "Which Player's Sessions do you want to view?";
+        for(size_t i = 0; i < c.getPlayers().size(); i++)
+        {
+            std::cout << i+1 << ". " << c.getPlayers()[i].getName() << std::endl;
+        }
+        int playerChoice;
+        while (true) {
+            std::cin >> playerChoice;
+            if (std::cin.fail() || playerChoice < 1 || playerChoice > c.getPlayers().size()) {
+                std::cin.clear(); // clear the error flag
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                std::cout << "Invalid input. Please enter a valid player number: ";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+                break; // valid input, exit the loop
+            }
+        }
+        Player::Player selectedPlayer = c.getPlayers()[playerChoice - 1];
+        c.getSessions(selectedPlayer);
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            coachDashboard(c);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+    }
+    else if(choice == 3)
+    {
+        std::cout<< "Which Player's Plan do you want to view?";
+        for(size_t i = 0; i < c.getPlayers().size(); i++)
+        {
+            std::cout << i+1 << ". " << c.getPlayers()[i].getName() << std::endl;
+        }
+        int playerChoice;
+        while (true) {
+            std::cin >> playerChoice;
+            if (std::cin.fail() || playerChoice < 1 || playerChoice > c.getPlayers().size()) {
+                std::cin.clear(); // clear the error flag
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                std::cout << "Invalid input. Please enter a valid player number: ";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+                break; // valid input, exit the loop
+            }
+        }
+        Player::Player selectedPlayer = c.getPlayers()[playerChoice - 1];
+        c.getPlan(selectedPlayer);
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            coachDashboard(c);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+    }
+    else if(choice == 4)
+    {
+        std::cout<< "Which Player's Plan do you want to manage?";
+        for(size_t i = 0; i < c.getPlayers().size(); i++)
+        {
+            std::cout << i+1 << ". " << c.getPlayers()[i].getName() << std::endl;
+        }
+        int playerChoice;
+        while (true) {
+            std::cin >> playerChoice;
+            if (std::cin.fail() || playerChoice < 1 || playerChoice > c.getPlayers().size()) {
+                std::cin.clear(); // clear the error flag
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                std::cout << "Invalid input. Please enter a valid player number: ";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+                break; // valid input, exit the loop
+            }
+        }
+        Player::Player selectedPlayer = c.getPlayers()[playerChoice - 1];
+        Player::Plan newPlan;
+        std::cout << "Enter new plan name: ";
+        std::cin >> newPlan.name;
+        std::cout << "Enter new plan description: ";
+        std::cin >> newPlan.description;
+        int numExercises;
+        std::cout << "Enter number of exercises: ";
+        std::cin >> numExercises;
+        for(int i = 0; i < numExercises; i++)
+        {
+            std::string exercise;
+            std::cout << "Enter exercise " << i+1 << ": ";
+            std::cin >> exercise;
+            newPlan.exercises.push_back(exercise);
+        }
+        int numDrills;
+        std::cout << "Enter number of drills: ";
+        std::cin >> numDrills;
+        for(int i = 0; i < numDrills; i++)
+        {
+            std::string drill;
+            std::cout << "Enter drill " << i+1 << ": ";
+            std::cin >> drill;
+            newPlan.drills.push_back(drill);
+        }
+        int numMatches;
+        std::cout << "Enter number of matches: ";
+        std::cin >> numMatches;
+        for(int i = 0; i < numMatches; i++)
+        {
+            std::string match;
+            std::cout << "Enter match " << i+1 << ": ";
+            std::cin >> match;
+            newPlan.matches.push_back(match);
+        }
+        c.managePlan(selectedPlayer, newPlan);
+        
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            coachDashboard(c);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+
+    }
+    else if(choice == 5)
+    {
+        std::cout<< "Which Player do you want to remove?";
+        for(size_t i = 0; i < c.getPlayers().size(); i++)
+        {
+            std::cout << i+1 << ". " << c.getPlayers()[i].getName() << std::endl;
+        }
+        int playerChoice;
+        while (true) {
+            std::cin >> playerChoice;
+            if (std::cin.fail() || playerChoice < 1 || playerChoice > c.getPlayers().size()) {
+                std::cin.clear(); // clear the error flag
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                std::cout << "Invalid input. Please enter a valid player number: ";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard any remaining input
+                break; // valid input, exit the loop
+            }
+        }
+        Player::Player selectedPlayer = c.getPlayers()[playerChoice - 1];
+        c.removePlayer(selectedPlayer);
+
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            coachDashboard(c);
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        std::cout << "Invalid choice. Exiting." << std::endl;
+        coachDashboard(c);
+    }
+
     return 0;
 }
 int main() {
@@ -141,7 +484,7 @@ int main() {
                 Player::Player p =  Player::Player(username, username + "@example.com", role, name, age, playerPosition);
                 p.saveToJson();
 
-                playerDashboard();
+                playerDashboard(p);
                 // Here you can add logic to show the player dashboard
             }
         else if(role == "coach")
@@ -155,7 +498,7 @@ int main() {
                 Coach::Coach c = Coach::Coach(username, username + "@example.com", role, name, coachID);
                 c.saveToJson();
                 
-                coachDashboard();
+                coachDashboard(c);
                 
 
                 // Here you can add logic to show the coach dashboard
@@ -187,13 +530,15 @@ int main() {
             if(role == "player" )
             {
                 std::cout << "Directing to Player Dashboard..." << std::endl;
-                playerDashboard();
+                Player::Player p = Player::Player(username, username + "@example.com", role, "", 0, Player::PlayerType::Batsman);
+                playerDashboard(p);
                 // Here you can add logic to show the player dashboard
             }
             else if(role == "coach" )
             {
                 std::cout << "Directing to Coach Dashboard..." << std::endl;
-                coachDashboard();
+                Coach::Coach c = Coach::Coach(username, username + "@example.com", role, "", "");
+                coachDashboard(c);
                 // Here you can add logic to show the coach dashboard
             }
             else

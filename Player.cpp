@@ -146,6 +146,13 @@ namespace Player
             
         }
     }
+    void Player::viewInjuries()
+    {
+        for(size_t i = 0; i < injuries.size(); i++)
+        {
+            std::cout << "Injury " << i+1 << ": " << injuries[i].type << ", Severity: " << static_cast<int>(injuries[i].severity) << ", Recovery Time: " << injuries[i].recoveryTime << ", Description: " << injuries[i].description <<"\n"<< std::endl;
+        }
+    }
     void Player::reportInjury(Injury i)
     {
         injuries.push_back(i);
