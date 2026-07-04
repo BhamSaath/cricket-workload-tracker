@@ -99,9 +99,41 @@ namespace Coach
             }
         }
     }
-    void Coach::Coach::addPlayer(Player::Player p)
+    void Coach::Coach::addPlayers()
     {
-        players.push_back(p);
+        int numPlayers;
+        std::cout << "How many players do you want to add? ";
+        std::cin >> numPlayers;
+        for(int i = 0; i < numPlayers; i++)
+        {
+            std::streamoff file("credentials.txt", std::ios::app);
+            std::string username;
+            std::cout << "Enter username for player " << i+1 << ": ";
+            std::cin >> username;
+            for(std::getline(file, line))
+            {
+                size_t pos = line.find(':');
+                if (pos != std::string::npos)
+                {
+                    std::string existingUsername = line.substr(0, pos);
+                    if (existingUsername == username)
+                    {
+                        std::string role = line.substr(pos + 1);
+                        if(role == "player")
+                        {
+                            Player::Player p(username);
+                            addPlayer(p);
+                            std::cout << "Player " << username << " added successfully." << std::endl;
+                        }
+                        else
+                        {
+                            std::cout << "Username " << username << " is not a player. Please enter a valid player username." << std::endl;
+                            i--; // Decrement i to retry this iteration
+                        }
+                    }
+                }
+            }
+        }
     }
     void Coach::Coach::managePlan(Player::Player& p, Player::Plan newPlan)
     {

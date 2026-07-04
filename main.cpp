@@ -4,13 +4,68 @@
 #include "auth.h"
 #include "Player.h"
 #include "Coach.h"
+#include <iomanip>
+#include <sstream>
+#include "bcrypt.h"
 
-
+std::string generateHash(const std::string& password) {
+    char salt[BCRYPT_HASHSIZE];
+    bcrypt_gensalt(12, salt);
+    char hash[BCRYPT_HASHSIZE];
+    bcrypt_hashpw(password.c_str(), salt, hash);
+    return std::string(hash);
+}
 std::vector<std::string> createAccount()
 {
     std::string username, password, role;
     std::cout << "Enter username: ";
     std::cin >> username;
+    if(std::ofstream("credentials.txt", std::ios::app).tellp() != 0) // Check if the file is not empty
+    {
+        std::ifstream file("credentials.txt");
+        std::string line;
+        while (std::getline(file, line))
+        {
+            size_t pos = line.find(':');
+            if (pos != std::string::npos)
+            {
+                std::string existingUsername = line.substr(0, pos);
+                if (existingUsername == username)
+                {
+                    std::cout << "Username already exists. Please choose a different username." << std::endl;
+                    while(true)
+                    {
+                        std::cout << "Enter username: ";
+                        std::cin >> username;
+                        file.clear(); // Clear the EOF flag
+                        file.seekg(0); // Go back to the beginning of the file
+                        bool exists = false;
+                        while (std::getline(file, line))
+                        {
+                            size_t pos = line.find(':');
+                            if (pos != std::string::npos)
+                            {
+                                std::string existingUsername = line.substr(0, pos);
+                                if (existingUsername == username)
+                                {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!exists)
+                        {
+                            break; // Exit the loop if the username does not exist
+                        }
+                        else
+                        {
+                            std::cout << "Username already exists. Please choose a different username." << std::endl;
+                        }
+                    } // Recursively call createAccount to try again
+                }
+            }
+        }
+    }
     std::cout << "Enter password: ";
     std::cin >> password;
     std::cout << "Enter role (admin/coach/player): ";
@@ -20,7 +75,7 @@ std::vector<std::string> createAccount()
     std::ofstream file("credentials.txt", std::ios::app);
     if (file.is_open())
     {
-        file << username << ":" << password << ":" << role << "\n";
+                file << username << ":" << generateHash(password) << ":" << role << "\n";
         file.close();
         std::cout << "Account created successfully!" << std::endl;
     }
@@ -30,8 +85,10 @@ std::vector<std::string> createAccount()
     }
     return {role, username};
 }
-int playerDashboard(Player::Player p)
+int playerDashboard(Player::Player& p)
 {
+    bool backToMainMenu = false;
+    while(!backToMainMenu) {
     int actionChoice = 0; 
     std::cout << "Welcome to the Player Dashboard!" << std::endl;
     std::cout<< "What do you want to do?\n 1. View Sessions\n 2. Add Sessions\n 3. View Plan\n 4.Report Injury\n 5.View Injuries 6.See Profile" << std::endl;
@@ -55,7 +112,7 @@ int playerDashboard(Player::Player p)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            playerDashboard(p);
+            backToMainMenu = false;
         }
         else if(exitChoice == 2)
         {
@@ -92,8 +149,7 @@ int playerDashboard(Player::Player p)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            playerDashboard(p);
-
+            backToMainMenu = false;
         }
         else if(exitChoice == 2)
         {
@@ -109,7 +165,7 @@ int playerDashboard(Player::Player p)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            playerDashboard(p);
+            backToMainMenu = false;
 
         }
         else if(exitChoice == 2)
@@ -136,12 +192,20 @@ int playerDashboard(Player::Player p)
                 break; // valid input, exit the loop
             }
         }
+        i.severity = static_cast<Player::SeverityLevel>(severityChoice);
+        std::cout << "Enter expected recovery time (e.g., 2 weeks): ";  
+        std::cin >> i.recoveryTime;
+        std::cout << "Enter injury description: ";
+        std::cin.ignore(); // Clear the newline character from the input buffer
+        std::getline(std::cin, i.description);
+        p.reportInjury(i);
+
         int exitChoice;
         std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            playerDashboard(p);
+            backToMainMenu = false;
 
         }
         else if(exitChoice == 2)
@@ -158,7 +222,7 @@ int playerDashboard(Player::Player p)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            playerDashboard(p);
+            backToMainMenu = false;
         }
         else if(exitChoice == 2)
         {
@@ -174,8 +238,8 @@ int playerDashboard(Player::Player p)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            playerDashboard(p);
-        }
+            backToMainMenu = false;
+        }   
         else if(exitChoice == 2)
         {
             std::cout<< "Exiting..." << std::endl;
@@ -184,14 +248,14 @@ int playerDashboard(Player::Player p)
     }
     else
     {
-        std::cout << "Invalid choice. Exitng." << std::endl;
+        std::cout << "Invalid choice. Exiting." << std::endl;
         playerDashboard(p);
         int exitChoice;
         std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            playerDashboard(p);
+            backToMainMenu = false;
         }
         else if(exitChoice == 2)
         {
@@ -199,11 +263,15 @@ int playerDashboard(Player::Player p)
             return 0;
         }
     }
+    }
+
     // Here you can add logic to show the player dashboard
     return 0;
 }
-int coachDashboard(Coach::Coach c)
+int coachDashboard(Coach::Coach& c)
 {
+    bool backToMainMenu = false;
+    while(!backToMainMenu) {
     std::cout << "Welcome to the Coach Dashboard!" << std::endl;
     // Here you can add logic to show the coach dashboard
     int choice;
@@ -236,7 +304,7 @@ int coachDashboard(Coach::Coach c)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            coachDashboard(c);
+            backToMainMenu = false;
         }
         else if(exitChoice == 2)
         {
@@ -270,7 +338,7 @@ int coachDashboard(Coach::Coach c)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            coachDashboard(c);
+            backToMainMenu = false;
         }
         else if(exitChoice == 2)
         {
@@ -304,7 +372,8 @@ int coachDashboard(Coach::Coach c)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            coachDashboard(c);
+            backToMainMenu = false;
+
         }
         else if(exitChoice == 2)
         {
@@ -368,13 +437,14 @@ int coachDashboard(Coach::Coach c)
             newPlan.matches.push_back(match);
         }
         c.managePlan(selectedPlayer, newPlan);
-        
+        selectedPlayer.saveToJson(); // Save the updated player data to JSON after managing the plan
         int exitChoice;
         std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            coachDashboard(c);
+            backToMainMenu = false;
+
         }
         else if(exitChoice == 2)
         {
@@ -410,7 +480,25 @@ int coachDashboard(Coach::Coach c)
         std::cin >> exitChoice;
         if(exitChoice == 1)
         {
-            coachDashboard(c);
+            backToMainMenu = false;
+
+        }
+        else if(exitChoice == 2)
+        {
+            std::cout<< "Exiting..." << std::endl;
+            return 0;
+        }
+    }
+    else if(choice == 6)
+    {
+        c.addPlayers();
+        int exitChoice;
+        std::cout<< "Do you to continue or exit?\n 1. Continue\n 2. Exit" << std::endl;
+        std::cin >> exitChoice;
+        if(exitChoice == 1)
+        {
+            backToMainMenu = false;
+
         }
         else if(exitChoice == 2)
         {
@@ -421,12 +509,17 @@ int coachDashboard(Coach::Coach c)
     else
     {
         std::cout << "Invalid choice. Exiting." << std::endl;
-        coachDashboard(c);
+        backToMainMenu = false;
     }
-
+    }
+    backToMainMenu = false; // Reset the flag for the next iteration
     return 0;
 }
-int main() {
+int main() 
+{
+    bool exitProgram = false;
+    while(!exitProgram)
+    {
     int choice;
     std::cout << "Hello, Cricket Workload Tracker!" << std::endl;
     std::cout << "1. Create Account\n2. Login\n" << std::endl;
@@ -484,7 +577,7 @@ int main() {
                 Player::Player p =  Player::Player(username, username + "@example.com", role, name, age, playerPosition);
                 p.saveToJson();
 
-                playerDashboard(p);
+                return playerDashboard(p);
                 // Here you can add logic to show the player dashboard
             }
         else if(role == "coach")
@@ -498,7 +591,7 @@ int main() {
                 Coach::Coach c = Coach::Coach(username, username + "@example.com", role, name, coachID);
                 c.saveToJson();
                 
-                coachDashboard(c);
+                return coachDashboard(c);
                 
 
                 // Here you can add logic to show the coach dashboard
@@ -530,15 +623,15 @@ int main() {
             if(role == "player" )
             {
                 std::cout << "Directing to Player Dashboard..." << std::endl;
-                Player::Player p = Player::Player(username, username + "@example.com", role, "", 0, Player::PlayerType::Batsman);
-                playerDashboard(p);
+                Player::Player p = Player::Player(username);
+                return playerDashboard(p);
                 // Here you can add logic to show the player dashboard
             }
             else if(role == "coach" )
             {
                 std::cout << "Directing to Coach Dashboard..." << std::endl;
-                Coach::Coach c = Coach::Coach(username, username + "@example.com", role, "", "");
-                coachDashboard(c);
+                Coach::Coach c = Coach::Coach(username);
+                return coachDashboard(c);
                 // Here you can add logic to show the coach dashboard
             }
             else
@@ -551,7 +644,8 @@ int main() {
     else
     {
         std::cout << "Invalid choice. Exiting." << std::endl;
-        main();
+        exitProgram = true;
+    }
     }
     return 0;
 }

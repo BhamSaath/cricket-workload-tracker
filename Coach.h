@@ -21,8 +21,14 @@ namespace Coach
         void setPlayers(std::vector<Player::Player> p) { players = p; }
         void saveToJson();
         void readFromJson();
+        void addPlayers();
         Coach(std::string uname, std::string mail, std::string r, std::string n, std::string id)
             : User(uname, mail, r), name(n), coachID(id) {}
+        Coach(const std::string& uname) : User(uname)
+        {
+            setUsername(uname);
+            readFromJson(); // Load coach data from JSON when creating a Coach object with just the username
+        };
         void getPlayerDetails(Player::Player p);
         void getSessions(Player::Player p);
         void getPlan(Player::Player p);

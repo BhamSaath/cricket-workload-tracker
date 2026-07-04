@@ -67,7 +67,11 @@ namespace Player
         
         Player(std::string uname, std::string mail, std::string r, std::string n, int a, PlayerType pos)
             : User(uname, mail, r), name(n), age(a), position(pos) {}
-        Player(const std::string& uname);
+        Player(const std::string& uname) : User(uname)
+        {
+            setUsername(uname);
+            readFromJson(); // Load player data from JSON when creating a Player object with just the username
+        };
 
         void addSession(Session s);
         std::string getName() const { return name; }
@@ -84,31 +88,16 @@ namespace Player
         }
         void setAge(int a) { age = a; }
         void setName(std::string n) { name = n; }
-        void setPosition(std::string pos)
+        void setPosition(int pos)
         {
-            if(pos == "Fast Bowler")
-            {
-                position = PlayerType::FastBowler;
-            }
-            else if(pos == "Spinner")
-            {
-                position = PlayerType::Spinner;
-            }
-            else if(pos == "Batsman")
-            {
-                position = PlayerType::Batsman;
-            }
-            else if(pos == "Wicket Keeper")
-            {
-                position = PlayerType::WicketKeeper;
-            }
-            else if(pos == "Fast All Rounder")
-            {
-                position = PlayerType::FastAllRounder;
-            }
-            else if(pos == "Spin All Rounder")
-            {
-                position = PlayerType::SpinAllRounder;
+            switch(pos) {
+                case 0: position = PlayerType::FastBowler; break;
+                case 1: position = PlayerType::Spinner; break;
+                case 2: position = PlayerType::Batsman; break;
+                case 3: position = PlayerType::WicketKeeper; break;
+                case 4: position = PlayerType::FastAllRounder; break;
+                case 5: position = PlayerType::SpinAllRounder; break;
+                default: std::cerr << "Invalid position value. Position not set." << std::endl; break;
             }
         }
         int getAge() const { return age; }
