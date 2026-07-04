@@ -64,20 +64,68 @@ namespace Player
     class Player: public User::User
     {
         public:
+        
+        Player(std::string uname, std::string mail, std::string r, std::string n, int a, PlayerType pos)
+            : User(uname, mail, r), name(n), age(a), position(pos) {}
+        Player(const std::string& uname);
+
+        void addSession(Session s);
+        std::string getName() const { return name; }
+        std::string getPosition() const { 
+            switch(position) {
+                case PlayerType::FastBowler: return "Fast Bowler";
+                case PlayerType::Spinner: return "Spinner";
+                case PlayerType::Batsman: return "Batsman";
+                case PlayerType::WicketKeeper: return "Wicket Keeper";
+                case PlayerType::FastAllRounder: return "Fast All Rounder";
+                case PlayerType::SpinAllRounder: return "Spin All Rounder";
+                default: return "Unknown Position";
+            }
+        }
+        void setAge(int a) { age = a; }
+        void setName(std::string n) { name = n; }
+        void setPosition(std::string pos)
+        {
+            if(pos == "Fast Bowler")
+            {
+                position = PlayerType::FastBowler;
+            }
+            else if(pos == "Spinner")
+            {
+                position = PlayerType::Spinner;
+            }
+            else if(pos == "Batsman")
+            {
+                position = PlayerType::Batsman;
+            }
+            else if(pos == "Wicket Keeper")
+            {
+                position = PlayerType::WicketKeeper;
+            }
+            else if(pos == "Fast All Rounder")
+            {
+                position = PlayerType::FastAllRounder;
+            }
+            else if(pos == "Spin All Rounder")
+            {
+                position = PlayerType::SpinAllRounder;
+            }
+        }
+        int getAge() const { return age; }
+        void setTrainingPlan(Plan p) { trainingPlan = p; }
+        void viewSessions(); 
+        void saveToJson();
+        void readFromJson();
+        void viewPlan();
+        void reportInjury(Injury i);
+
+        private:
         std::string name;
         int age;
         PlayerType position;
         std::vector<Session> sessions;
         std::vector<Injury> injuries;
         Plan trainingPlan;
-        
-        Player(std::string uname, std::string mail, std::string r, std::string n, int a, PlayerType pos)
-            : User(uname, mail, r), name(n), age(a), position(pos) {}
-        void addSession(Session s);
-        std::string viewSessions(); 
-        void saveToJson();
-        std::string viewPlan();
-        void reportInjury(Injury i);
     };
     
 };

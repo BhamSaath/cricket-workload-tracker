@@ -13,9 +13,14 @@ namespace Coach
     {   
         
         public:
-        std::string name;
-        std::vector<Player::Player> players;
-        std::string coachID;
+        std::string getName() const { return name; }
+        std::string getCoachID() const { return coachID; }
+        std::vector<Player::Player>getPlayers() const { return players; }
+        void setName(std::string n) { name = n; }
+        void setCoachID(std::string id) { coachID = id; }
+        void setPlayers(std::vector<Player::Player> p) { players = p; }
+        void saveToJson();
+        void readFromJson();
         Coach(std::string uname, std::string mail, std::string r, std::string n, std::string id)
             : User(uname, mail, r), name(n), coachID(id) {}
         void getPlayerDetails(Player::Player p);
@@ -23,7 +28,11 @@ namespace Coach
         void getPlan(Player::Player p);
         void removePlayer(Player::Player p);
         void addPlayer(Player::Player p);
-        void managePlan(Player::Player P); 
+        void managePlan(Player::Player& p, Player::Plan newPlan); 
+        private:
+        std::string name;
+        std::vector<Player::Player> players;
+        std::string coachID;
 
     };
 

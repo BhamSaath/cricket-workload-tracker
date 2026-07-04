@@ -2,13 +2,10 @@
 #include <string> 
 #include <fstream>
 #include "auth.h"
-#include "auth.cpp"
 #include "Player.h"
-#include "Player.cpp"
-#include "Admin.h"
-#include "Admin.cpp"
 #include "Coach.h"
-#include "Coach.cpp"
+
+
 std::vector<std::string> createAccount()
 {
     std::string username, password, role;
@@ -94,8 +91,9 @@ int main() {
 
     if(choice == 1)
     {
-        std::string role = createAccount()[0];
-        std::string username = createAccount()[1];
+        std::vector<std::string> accountDetails = createAccount();
+        std::string role = accountDetails[0];
+        std::string username = accountDetails[1];
         if(role == "player" )
             {
                 std::string name;
@@ -140,7 +138,8 @@ int main() {
                     std::cout << "Invalid position. Exiting." << std::endl;
                     return 0;
                 }
-                Player::Player Player(username, username + "@example.com", role, name, age, playerPosition);
+                Player::Player p =  Player::Player(username, username + "@example.com", role, name, age, playerPosition);
+                p.saveToJson();
 
                 playerDashboard();
                 // Here you can add logic to show the player dashboard
@@ -153,17 +152,13 @@ int main() {
 
                 std::string coachID = "C" + std::to_string(rand() % 10000); // Generate a random coach ID
 
-                Coach::Coach Coach(username, username + "@example.com", role, name, coachID);
-
+                Coach::Coach c = Coach::Coach(username, username + "@example.com", role, name, coachID);
+                c.saveToJson();
+                
                 coachDashboard();
-                // Here you can add logic to show the coach dashboard
-            }
-            else if(role == "admin" )
-            {
-                Admin::Admin Admin(username, username + "@example.com", role);
+                
 
-                adminDashboard();
-                // Here you can add logic to show the admin dashboard
+                // Here you can add logic to show the coach dashboard
             }
             else
             {
@@ -201,18 +196,11 @@ int main() {
                 coachDashboard();
                 // Here you can add logic to show the coach dashboard
             }
-            else if(role == "admin")
-            {
-                std::cout << "Directing to Admin Dashboard..." << std::endl;
-                adminDashboard();
-                // Here you can add logic to show the admin dashboard
-            }
             else
             {
                 std::cout << "Unknown role. Exiting." << std::endl;
             }
-            // Here you can add logic to redirect the user based on their role
-            // For example, if role is "admin", show admin dashboard, etc.
+            
         }
     }
     else
