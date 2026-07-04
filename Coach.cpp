@@ -11,7 +11,7 @@
 namespace Coach
 {
     using json = nlohmann::json;
-    void Coach::Coach::saveToJson()
+    void Coach::saveToJson()
     {
         
         json j;
@@ -45,7 +45,12 @@ namespace Coach
 
 
     }
-    void Coach::Coach::readFromJson()
+    void  Coach::addPlayer(const Player::Player& p)
+    {
+        players.push_back(p);
+        saveToJson(); // Save the updated coach data to JSON after adding a player
+    }
+    void Coach::readFromJson()
     {
         std::ifstream file(getUsername() + "_coach_data.json");
         if (file.is_open()) {
@@ -76,66 +81,66 @@ namespace Coach
             std::cerr << "Unable to open file for reading." << std::endl;
         }
     }
-    void Coach::Coach::getPlayerDetails(Player::Player p)
+    void Coach::getPlayerDetails( Player::Player p)
     {
         std::cout<< "Player Name: " << p.getName() << "Player Age: " << p.getAge() << "\n" << "Player Role:"<< p.getPosition()<<std::endl;
     }
-    void Coach::Coach::getSessions(Player::Player p)
+    void Coach::getSessions(Player::Player p)
     {
         p.viewSessions();
     }
-    void Coach::Coach::getPlan(Player::Player p)
+    void Coach::getPlan(Player::Player p)
     {
         p.viewPlan();
     }
-    void Coach::Coach::removePlayer(Player::Player p)
+    void Coach::removePlayer(Player::Player p)
     {
         for(size_t i = 0; i < players.size(); i++)
         {
             if(players[i].getName() == p.getName() && players[i].getAge() == p.getAge() && players[i].getPosition() == p.getPosition())
             {
                 players.erase(players.begin() + i);
+                saveToJson(); // Save the updated coach data to JSON after removing a player
                 break;
             }
         }
     }
-    void Coach::Coach::addPlayers()
+    void Coach::addPlayers()
     {
         int numPlayers;
         std::cout << "How many players do you want to add? ";
         std::cin >> numPlayers;
-        for(int i = 0; i < numPlayers; i++)
-        {
-            std::streamoff file("credentials.txt", std::ios::app);
-            std::string username;
-            std::cout << "Enter username for player " << i+1 << ": ";
-            std::cin >> username;
-            for(std::getline(file, line))
+        std::ifstream file("credentials.txt");
+        std::string line;
+        std::string username;
+        std::cout << "Enter username for player " << ": ";
+        std::cin >> username;
+        
+        while(std::getline(file, line)) {
+            size_t pos = line.find(':');
+            if (pos != std::string::npos)
             {
-                size_t pos = line.find(':');
-                if (pos != std::string::npos)
+                std::string existingUsername = line.substr(0, pos);
+                if (existingUsername == username)
                 {
-                    std::string existingUsername = line.substr(0, pos);
-                    if (existingUsername == username)
+                    std::string role = line.substr(pos + 1);
+                    if(role == "player")
                     {
-                        std::string role = line.substr(pos + 1);
-                        if(role == "player")
-                        {
-                            Player::Player p(username);
-                            addPlayer(p);
-                            std::cout << "Player " << username << " added successfully." << std::endl;
-                        }
-                        else
-                        {
-                            std::cout << "Username " << username << " is not a player. Please enter a valid player username." << std::endl;
-                            i--; // Decrement i to retry this iteration
-                        }
+                        Player::Player p(username);
+                        addPlayer(p);
+                        std::cout << "Player " << username << " added successfully." << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "Username " << username << " is not a player. Please enter a valid player username." << std::endl;
+                        // Decrement i to retry this iteration
                     }
                 }
             }
         }
+        
     }
-    void Coach::Coach::managePlan(Player::Player& p, Player::Plan newPlan)
+    void Coach::managePlan(Player::Player& p, Player::Plan newPlan)
     {
         p.setTrainingPlan(newPlan);
     }

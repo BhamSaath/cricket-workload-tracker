@@ -32,8 +32,8 @@ namespace Coach
         void getPlayerDetails(Player::Player p);
         void getSessions(Player::Player p);
         void getPlan(Player::Player p);
-        void removePlayer(Player::Player p);
-        void addPlayer(Player::Player p);
+        void removePlayer(Player::Player p); 
+        void addPlayer(const Player::Player& p);
         void managePlan(Player::Player& p, Player::Plan newPlan); 
         private:
         std::string name;

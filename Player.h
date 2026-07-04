@@ -5,6 +5,7 @@
 #include <array> 
 #include "User.h"
 #include "json.hpp"
+#include <iostream>
 namespace Player 
 {
     enum class SeverityLevel
@@ -66,12 +67,8 @@ namespace Player
         public:
         
         Player(std::string uname, std::string mail, std::string r, std::string n, int a, PlayerType pos)
-            : User(uname, mail, r), name(n), age(a), position(pos) {}
-        Player(const std::string& uname) : User(uname)
-        {
-            setUsername(uname);
-            readFromJson(); // Load player data from JSON when creating a Player object with just the username
-        };
+            : User(uname, mail, r), name(n), age(a), position(pos){};
+        Player(const std::string& uname);
 
         void addSession(Session s);
         std::string getName() const { return name; }

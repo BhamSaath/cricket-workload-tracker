@@ -15,7 +15,9 @@ namespace Player
     using json = nlohmann::json;
     Player::Player(const std::string& uname) : User(uname)
     {
-        readFromJson(); // Automatically load data from JSON when the object is created
+        setUsername(uname);
+        
+        readFromJson();
     }
     void Player::saveToJson()
     {

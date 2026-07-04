@@ -6,14 +6,33 @@
 #include "Coach.h"
 #include <iomanip>
 #include <sstream>
-#include "bcrypt.h"
+#include <sstream>
+//#include "bcrypt.h"
 
-std::string generateHash(const std::string& password) {
-    char salt[BCRYPT_HASHSIZE];
-    bcrypt_gensalt(12, salt);
-    char hash[BCRYPT_HASHSIZE];
-    bcrypt_hashpw(password.c_str(), salt, hash);
-    return std::string(hash);
+// std::string generateHash(const std::string& password) {
+//     char salt[BCRYPT_HASHSIZE];
+//     bcrypt_gensalt(12, salt);
+//     char hash[BCRYPT_HASHSIZE];
+//     bcrypt_hashpw(password.c_str(), salt, hash);
+//     return std::string(hash);
+// }
+std::string generateHash(const std::string& password)
+{
+    
+    // A large prime number to kick off the calculation
+    unsigned int hashValue = 2166136261U; 
+    
+    // Mix the characters of the password into the hash value
+    for (char c : password) {
+        hashValue ^= static_cast<unsigned int>(c);
+        hashValue *= 16777619U; // Another prime number multiplier
+    }
+    
+    // Convert the resulting number into a clean hex string
+    std::stringstream ss;
+    ss << std::hex << std::setw(8) << std::setfill('0') << hashValue;
+    return ss.str();
+    
 }
 std::vector<std::string> createAccount()
 {
