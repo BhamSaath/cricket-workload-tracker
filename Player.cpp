@@ -121,7 +121,7 @@ namespace Player
         saveToJson(); // Save the updated player data to JSON after adding a session
 
     }
-    void Player::viewSessions()
+    void Player::viewSessions () const
     {
         for(size_t i = 0; i < sessions.size(); i++)
         {
@@ -129,7 +129,7 @@ namespace Player
         }
     }
     
-    void Player::viewPlan()
+    void Player::viewPlan() const
     {
         std::cout<< trainingPlan.name<< ": " << trainingPlan.description<< "\n"<< std::endl;
         for(size_t i = 0; i < trainingPlan.drills.size(); i++)
