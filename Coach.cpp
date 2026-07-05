@@ -6,6 +6,7 @@
 #include <fstream>
 #include "Player.h"
 #include "Coach.h"
+#include <sstream>
 #include "User.h"
 #include "json.hpp"
 namespace Coach
