@@ -1,142 +1,50 @@
-# Cricket Workload & Injury Management System
+Cricket Workload & Injury Management System
+A role-based, terminal-driven C++ application built to solve a real problem in cricket coaching: tracking how much physical load a player is taking on, week to week, before that load turns into an injury. Fast bowlers in particular get hurt not from one bad session but from creeping workload nobody wrote down. This project gives coaches and players a shared, persistent place to log that history.
+I built this from a bare class skeleton — headers with empty method bodies and no working authentication — into a compiling, running application with real password hashing, JSON-backed persistence, and a role-based dashboard system. Below is a full breakdown of how it's built and why it's built that way.
+The Problem This Solves
+Overuse injuries in cricket, especially for fast bowlers, are almost always workload problems, not single-event injuries. A bowler who goes from 15 overs a week to 35 overs a week without anyone tracking that jump is a bowler heading toward a stress fracture. Most amateur and club-level teams track this on paper or not at all. This system gives a lightweight, no-server-required way for a coach to see a roster of players, review their logged sessions, and assign or adjust training plans — while players independently log their own sessions and injuries from their side of the same system.
+Architecture Overview
+The project is built around a three-tier class hierarchy using C++ inheritance, not because it looks impressive on paper, but because it solves a real problem: a Player and a Coach share almost nothing in terms of behavior, but they do share identity — a username, an email, a role. That shared identity belongs in one place.
+User (base class — User.h / User.cpp)
+├── Player (Player.h / Player.cpp)
+└── Coach (Coach.h / Coach.cpp)
+User is the base class every account inherits from. It holds username, email, and role, along with a json profileData field reserved for extensible profile data. It has no behavior of its own beyond getters, setters, and a logout() stub — its entire job is to be the shared identity layer that Player and Coach build on top of. Three constructors exist on User: a full constructor for account creation, a default constructor, and a username-only constructor, which turns out to be the single most important design decision in the whole project (explained below).
+Player extends User and represents an athlete. It tracks:
 
-A lightweight, zero-dependency C++ command-line application designed for cricket teams. This system provides a local, file-based architecture for coaches and players to track training sessions, manage workloads, assign development plans, and monitor injury recovery times.
+name, age, and a PlayerType enum (FastBowler, Spinner, Batsman, WicketKeeper, FastAllRounder, SpinAllRounder)
+a std::vector<Session> of every training, match, or recovery session logged
+a std::vector<Injury> of every reported injury, each carrying a SeverityLevel (Mild, Moderate, Severe), an expected recovery time, and a description
+a single Plan object representing the player's current assigned training plan — exercises, drills, and upcoming matches, all as string vectors
 
-Designed with portability in mind, this application requires no external database servers or cryptographic libraries, relying entirely on standard C++ libraries and local JSON data structures.
-
----
-
-## 1. System Overview
-
-Managing physical workload is critical in modern cricket, particularly for high-impact roles like fast bowling. Over-training leads to stress fractures, while under-training results in poor match readiness.
-
-This application digitizes the tracking process. It establishes a secure, dual-role terminal interface where players can log daily activities and injuries, and coaches can monitor team-wide health and assign structured regimens.
-
-### Technical Philosophy: Zero-Dependency Build
-
-A core design requirement was cross-platform portability without complex build systems (like CMake) or heavy external libraries (like OpenSSL or Bcrypt).
-
-* **Authentication:** Handled via a custom deterministic mathematical hashing algorithm (utilizing bitwise XOR and prime multiplication) to secure credentials locally.
-* **Storage:** Handled via flat-file JSON storage (`nlohmann/json`), ensuring data is easily readable, portable, and version-controllable without an SQL server.
-
----
-
-## 2. Core Features
-
-### Role-Based Access Control
-
-The system initializes with a dual-authentication layer distinguishing between administrative users (Coaches) and standard users (Players).
-
-#### Coach Module
-
-* **Roster Management:** Dynamically add or remove players from the active squad roster.
-* **Workload Monitoring:** Access read-only views of individual player training sessions, match logs, and recovery periods.
-* **Plan Assignment:** Push structured training regimens (drills, exercises, and target matches) to specific players.
-* **Injury Oversight:** Monitor reported injuries, severity levels, and projected return-to-play timelines across the squad.
-
-#### Player Module
-
-* **Role Specialization:** Player profiles are strictly typed via Enums (Fast Bowler, Spinner, Batsman, Wicket Keeper, Fast All-Rounder, Spin All-Rounder) to contextualize workload data.
-* **Session Logging:** Input daily activity, categorized by `SessionType` (Training, Match, Recovery), alongside duration metrics and qualitative notes.
-* **Injury Reporting:** Log physical issues using a standardized severity index (Mild, Moderate, Severe) and input expected recovery windows.
-* **Plan Retrieval:** View assigned tactical and physical training regimens set by the coaching staff.
-
----
-
-## 3. Technical Architecture
-
-The application is built using Object-Oriented C++14, relying heavily on inheritance and localized namespaces.
-
-### Class Structure
-
-* **`User` (Base Class):** Handles shared attributes (`username`, `email`, `role`) and authentication logic.
-* **`Coach` (Derived):** Extends `User`. Contains `std::vector<Player::Player>` to maintain state of the assigned squad. Methods focus on squad iteration and file parsing.
-* **`Player` (Derived):** Extends `User`. Maintains discrete vectors for `Session` and `Injury` objects, and a `Plan` struct for current assignments.
-
-### Data Persistence Model
-
-State is maintained via file I/O operations triggered automatically upon any state mutation (e.g., adding a session, removing a player). Data is serialized to `[username]_data.json` files.
-
-*Example Player Schema:*
-
-```json
-{
-    "username": "j_anderson",
-    "role": "player",
-    "position": 0,
-    "age": 24,
-    "sessions": [
-        {
-            "date": "2023-10-12",
-            "duration": "120 mins",
-            "type": 0,
-            "notes": "Net session, focused on outswing."
-        }
-    ],
-    "injuries": []
-}
-
-```
-
-### Custom Hashing Implementation
-
-To avoid linking errors associated with missing local cryptographic libraries, the application uses an internal hashing loop for password verification. The algorithm initiates with a prime seed (`2166136261U`), processes the password string via bitwise XOR operations against each character, and multiplies by a secondary prime (`16777619U`) to ensure deterministic, irreversible hex string outputs.
-
----
-
-## 4. Installation & Build Instructions
-
-### Prerequisites
-
-* A C++ compiler supporting the C++14 standard (`g++` or `clang++`).
-* macOS, Linux, or WSL (Windows Subsystem for Linux) terminal environment.
-
-### Source Code Compilation
-
-1. Clone the repository to your local machine.
-2. Ensure `json.hpp` is present in the root directory alongside the source files.
-3. Open your terminal, navigate to the project directory, and execute the following compiler command:
-
-```bash
-clang++ -std=c++14 main.cpp auth.cpp Player.cpp Coach.cpp User.cpp -o cricket
-
-```
-
-*Note: The `-o cricket` flag designates the compiled executable name. No external linker flags (e.g., `-lssl`) are required.*
-
-### Execution
-
-Run the compiled binary directly from the terminal:
-
-```bash
+Player exposes addSession(), viewSessions(), viewPlan(), reportInjury(), viewInjuries(), and the persistence pair saveToJson() / readFromJson().
+Coach extends User and represents the person managing a roster. It holds a coachID, a name, and a std::vector<Player> roster. Its methods are almost entirely about acting on a specific player from that roster: getPlayerDetails(), getSessions(), getPlan(), managePlan() (which overwrites a player's assigned Plan and immediately persists it), addPlayer() / removePlayer() for direct roster manipulation, and addPlayers() — a menu-driven method that looks up an existing player account by username against the shared credentials store and pulls them onto the coach's roster without needing to re-enter any of their data.
+Authentication: Decoupled by Design
+The single most deliberate architectural decision in this project is that authentication and object construction are two entirely separate operations that never touch each other's concerns.
+auth.cpp owns exactly one job: given a username and password, read credentials.txt line by line, split each line on : into stored username, stored password hash, and stored role, and compare using bcrypt::validatePassword(). If it matches, it hands back a role string. That's it. It has no idea what a Player or a Coach even is.
+Once a role comes back, main.cpp uses it to decide which class to construct — and here's where the username-only constructor on Player and Coach earns its place. Calling Player::Player(username) doesn't create an empty object waiting to be filled in; its constructor body immediately calls readFromJson(), which opens [username]_data.json, and hydrates every field — sessions, injuries, training plan, all of it — back into memory. The same pattern exists on Coach, pulling its roster back from [username]_coach_data.json.
+The result is that logging in and loading a user's data are conceptually two different questions — "is this really you?" and "what does your account contain?" — answered by two different pieces of code that don't know about each other. That separation is what makes it possible to add new authentication methods later (a real OAuth flow, for instance) without touching a single line of how Player or Coach data is loaded.
+Passwords Are Never Stored in Plaintext
+Account creation and login both run through bcrypt::generateHash() and bcrypt::validatePassword() — a genuine, vendored implementation of the OpenBSD bcrypt algorithm (bcrypt.cpp, blowfish.cpp, node_blf.h, openbsd.h), not a placeholder or a toy hash function. This is the same password hashing scheme used in real production authentication systems, brought in as source so the project has zero external dependency on OpenSSL or any system-level crypto library. credentials.txt never contains a password — only a username, a bcrypt hash, and a role, delimited by colons.
+Data Persistence: JSON, Not a Database
+Every Player and Coach account persists to its own individual JSON file ([username]_data.json, [username]_coach_data.json), read and written through the single-header nlohmann/json library (json.hpp). Username is used as both the filename and the natural lookup key — the same pattern real document-store databases use, just without the server. saveToJson() and readFromJson() exist symmetrically on both Player and Coach, and every mutating action — adding a session, reporting an injury, updating a training plan, adding or removing a player from a roster — calls saveToJson() immediately afterward, so state on disk never drifts from state in memory during a session.
+The Terminal Interface
+main.cpp is the entry point and owns the full user-facing flow: account creation (with duplicate-username protection that checks credentials.txt before writing), login, and two distinct dashboard loops.
+The Player Dashboard offers six actions: view sessions, log a new session (type, duration, and free-text notes), view the current assigned training plan, report an injury (severity-classified with a recovery estimate), review all past injuries, and view their own profile summary.
+The Coach Dashboard offers six actions: view a specific player's details, view a specific player's session history, view a specific player's assigned plan, assign or overwrite a player's training plan (built interactively — number of exercises, drills, and matches, entered one at a time), remove a player from the roster, and pull an existing player account onto the roster by username.
+Both dashboards run on a while loop with input validation on every numeric prompt — invalid input clears the failed stream state and re-prompts rather than crashing or looping silently.
+A Real Bug That Got Caught and Fixed
+Worth documenting honestly: an early version of this project read free-text fields (player names, coach names) using std::cin >>, which stops reading at the first whitespace character. A name like "John Smith" would silently truncate to "John," leaving "Smith" sitting in the input buffer to corrupt the very next prompt. The fix required switching those fields to std::getline() — and further, adding an explicit std::cin.ignore() immediately before each getline() call, because a leftover newline character from the preceding cin >> read would otherwise cause getline() to capture an empty string instead of waiting for real input. This was verified by actually compiling and running the binary with realistic multi-word input rather than trusting that the fix looked correct on paper — the kind of end-to-end testing habit this project reinforced.
+Build Instructions
+bashgit clone https://github.com/BhamSaath/cricket-workload-tracker
+cd cricket-workload-tracker
+g++ -std=c++14 main.cpp auth.cpp Player.cpp Coach.cpp User.cpp bcrypt.cpp blowfish.cpp -o cricket
 ./cricket
+No external libraries need to be installed. json.hpp and the bcrypt/Blowfish source files are vendored directly in the repository, so this builds identically on macOS, Linux, or WSL with nothing but a C++14-capable compiler.
+Known Limitations
 
-```
+Session duration is currently stored as a free-text string rather than a structured numeric value, so there's no automated overs-based workload threshold yet — the feature this project is named for is tracked qualitatively (session type and notes) but not yet quantitatively (a running weekly overs count with a safety threshold warning). This is the clear next feature to build.
+No automated test suite exists; correctness has been verified through direct compilation and manual end-to-end walkthroughs of both dashboard flows.
+Single-machine, single-process use only — there's no network layer, so a coach and their players need to be using the same local data files to see a consistent roster.
 
----
-
-## 5. Usage Walkthrough
-
-1. **System Boot:** Upon running `./cricket`, you are prompted to either Register or Login.
-2. **Registration:** Provide a username, password, email, and select your role. The system will securely hash the password and append the credentials to `credentials.txt`.
-3. **Data Initialization:** * If logging in as a new Player, the system instantiates a `Player` object and prompts for age and specific cricket role, generating your initial JSON profile.
-* If logging in as a Coach, you are granted access to the squad management terminal to begin parsing existing player files into your roster.
-
-
-4. **Operations:** Use the numerical menu system to interact with the objects (e.g., press `1` to Add Session, press `2` to View Assigned Plan). All changes trigger a `saveToJson()` event, safely writing the state to disk before exiting.
-
----
-
-## 6. Future Development Roadmap
-
-Workload Metrics (ACWR): Implement an automated formula to calculate the Acute-to-Chronic Workload Ratio (ACWR). By comparing a player’s short-term (7-day) workload against their long-term (28-day) average, the system can flag over-training risks before injuries occur.
-
-Concurrent AI Insights Integration: Transition the system's analytical engine to leverage external Large Language Model (LLM) APIs asynchronously.
-
-Architecture: Implement a multi-threaded or asynchronous connection pool (asyncio/httpx paradigm) to concurrently pass batch data packets (player workloads, injury logs, and positions) to an AI endpoint.
-
-Delivery: Generate parallel, real-time automated coaching tips, specialized drills, and custom recovery schedules without blocking the core application UI thread or exceeding token-per-minute (TPM) rate limits.
-
-Data Visualization Interface: Export local JSON datasets to a lightweight frontend or plotting script to render rolling 4-week workload charts, keeping a clear visual record of squad fatigue.
-
-Strict Input Sanitization: Expand std::cin validation hooks across the terminal menus to handle unexpected data types gracefully, eliminating edge-case terminal loops when users enter strings into numerical fields.
+What Building This Actually Taught Me
+Going in, I knew basic C++ — loops, conditionals, simple classes. Coming out the other side, I've built and personally debugged a multi-file inheritance hierarchy with a pure-virtual-style shared base class, bidirectional JSON serialization of nested custom objects, a real cryptographic library integration compiled from vendored source, and a role-based authentication system that's architecturally decoupled from data persistence on purpose. I also learned, the hard way, why cin >> and getline() don't mix carelessly, why a constructor should never silently do file I/O without being explicit about it, and why "it compiles" and "it works when a real person uses it" are two different bars that both have to be cleared before something is actually done.
