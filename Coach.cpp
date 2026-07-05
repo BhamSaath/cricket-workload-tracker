@@ -81,19 +81,19 @@ namespace Coach
             std::cerr << "Unable to open file for reading." << std::endl;
         }
     }
-    void Coach::getPlayerDetails( Player::Player p)
+    void Coach::getPlayerDetails( const Player::Player& p)
     {
         std::cout<< "Player Name: " << p.getName() << "Player Age: " << p.getAge() << "\n" << "Player Role:"<< p.getPosition()<<std::endl;
     }
-    void Coach::getSessions(Player::Player p)
+    void Coach::getSessions(const Player::Player& p)
     {
         p.viewSessions();
     }
-    void Coach::getPlan(Player::Player p)
+    void Coach::getPlan(const Player::Player& p)
     {
         p.viewPlan();
     }
-    void Coach::removePlayer(Player::Player p)
+    void Coach::removePlayer(const Player::Player& p)
     {
         for(size_t i = 0; i < players.size(); i++)
         {
