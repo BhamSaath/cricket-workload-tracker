@@ -97,6 +97,7 @@ namespace Player
         void saveToJson();
         void readFromJson();
         void viewPlan()const ;
+        int getPositionInt() const;
         void reportInjury(Injury i);
         void viewInjuries();
 
