@@ -15,7 +15,7 @@ namespace Coach
         public:
         std::string getName() const { return name; }
         std::string getCoachID() const { return coachID; }
-        std::vector<Player::Player>getPlayers() const { return players; }
+        std::vector<Player::Player> getPlayers() const { return players; }
         void setName(std::string n) { name = n; }
         void setCoachID(std::string id) { coachID = id; }
         void setPlayers(std::vector<Player::Player> p) { players = p; }

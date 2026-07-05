@@ -97,7 +97,7 @@ namespace Coach
     {
         for(size_t i = 0; i < players.size(); i++)
         {
-            if(players[i].getName() == p.getName() && players[i].getAge() == p.getAge() && players[i].getPosition() == p.getPosition())
+            if(players[i].getUsername() == p.getUsername() &&players[i].getName() == p.getName() && players[i].getAge() == p.getAge() && players[i].getPosition() == p.getPosition())
             {
                 players.erase(players.begin() + i);
                 saveToJson(); // Save the updated coach data to JSON after removing a player
@@ -107,9 +107,7 @@ namespace Coach
     }
     void Coach::addPlayers()
     {
-        int numPlayers;
-        std::cout << "How many players do you want to add? ";
-        std::cin >> numPlayers;
+        
         std::ifstream file("credentials.txt");
         std::string line;
         std::string username;
@@ -117,14 +115,15 @@ namespace Coach
         std::cin >> username;
         
         while(std::getline(file, line)) {
-            size_t pos = line.find(':');
-            if (pos != std::string::npos)
-            {
-                std::string existingUsername = line.substr(0, pos);
+            std::stringstream ss(line);
+            std::string storedUser, storedPass, storedRole;
+
+            std::getline(ss, storedUser, ':');
+            std::getline(ss, storedPass, ':');
+            std::getline(ss, storedRole, ':');
                 if (existingUsername == username)
                 {
-                    std::string role = line.substr(pos + 1);
-                    if(role == "player")
+                    if(storedRole == "player")
                     {
                         Player::Player p(username);
                         addPlayer(p);
@@ -143,5 +142,6 @@ namespace Coach
     void Coach::managePlan(Player::Player& p, Player::Plan newPlan)
     {
         p.setTrainingPlan(newPlan);
+        p.saveToJson(); // Save the updated player data to JSON after managing the plan
     }
 };
