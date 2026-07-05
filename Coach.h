@@ -29,10 +29,10 @@ namespace Coach
             setUsername(uname);
             readFromJson(); // Load coach data from JSON when creating a Coach object with just the username
         };
-        void getPlayerDetails(Player::Player p);
-        void getSessions(Player::Player p);
-        void getPlan(Player::Player p);
-        void removePlayer(Player::Player p); 
+        void getPlayerDetails(const Player::Player& p);
+        void getSessions(const Player::Player& p);
+        void getPlan(const Player::Player& p);
+        void removePlayer(const Player::Player& p); 
         void addPlayer(const Player::Player& p);
         void managePlan(Player::Player& p, Player::Plan newPlan); 
         private:

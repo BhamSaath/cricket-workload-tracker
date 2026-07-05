@@ -93,10 +93,10 @@ namespace Player
         }
         int getAge() const { return age; }
         void setTrainingPlan(Plan p) { trainingPlan = p; }
-        void viewSessions(); 
+        void viewSessions()const ; 
         void saveToJson();
         void readFromJson();
-        void viewPlan();
+        void viewPlan()const ;
         void reportInjury(Injury i);
         void viewInjuries();
 

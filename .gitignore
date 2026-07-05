@@ -67,3 +67,7 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+credentials.txt
+*_data.json
+cricket
+auth_program
