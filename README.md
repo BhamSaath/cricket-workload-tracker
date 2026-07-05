@@ -16,7 +16,6 @@ I built a terminal-based C++ application to track cricket players' workloads and
 Saathwik Bhamidipaty
 
 🚀 Usage
-<img width="2880" height="2118" alt="cricket_tracker_terminal_demo" src="https://github.com/user-attachments/assets/391bc2ef-3626-4f71-b138-57f1d0af00a1" />
 
 
 ⬇️ Installation
