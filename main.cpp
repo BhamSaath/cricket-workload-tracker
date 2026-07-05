@@ -529,7 +529,7 @@ int coachDashboard(Coach::Coach& c)
     else
     {
         std::cout << "Invalid choice. Exiting." << std::endl;
-        backToMainMenu = false;
+        return 0;
     }
     }
     backToMainMenu = false; // Reset the flag for the next iteration
