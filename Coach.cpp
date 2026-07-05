@@ -105,6 +105,11 @@ namespace Coach
             }
         }
     }
+    void Coach::managePlan(Player::Player& p, Player::Plan newPlan)
+    {
+        p.setTrainingPlan(newPlan);
+        p.saveToJson(); // Save the updated player data to JSON after managing the plan
+    }
     void Coach::addPlayers()
     {
         
@@ -114,14 +119,15 @@ namespace Coach
         std::cout << "Enter username for player " << ": ";
         std::cin >> username;
         
-        while(std::getline(file, line)) {
+        while(std::getline(file, line)) 
+        {
             std::stringstream ss(line);
             std::string storedUser, storedPass, storedRole;
 
             std::getline(ss, storedUser, ':');
             std::getline(ss, storedPass, ':');
             std::getline(ss, storedRole, ':');
-                if (existingUsername == username)
+                if (storedUser == username)
                 {
                     if(storedRole == "player")
                     {
@@ -135,13 +141,7 @@ namespace Coach
                         // Decrement i to retry this iteration
                     }
                 }
-            }
         }
+    }
         
-    }
-    void Coach::managePlan(Player::Player& p, Player::Plan newPlan)
-    {
-        p.setTrainingPlan(newPlan);
-        p.saveToJson(); // Save the updated player data to JSON after managing the plan
-    }
 };

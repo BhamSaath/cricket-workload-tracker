@@ -8,7 +8,8 @@
 #include <sstream>
 #include <sstream>
 #include "bcrypt.h"
-
+#include "node_blf.h"
+#include "openbsd.h"
 
 std::vector<std::string> createAccount()
 {
