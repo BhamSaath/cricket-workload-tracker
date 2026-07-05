@@ -115,6 +115,11 @@ namespace Player
             std::cerr << "Unable to open file for reading." << std::endl;
         }
     }
+
+    int Player::getPositionInt() const
+    {
+        return static_cast<int>(position);
+    }
     void Player::addSession(Session s)
     {
         sessions.push_back(s);

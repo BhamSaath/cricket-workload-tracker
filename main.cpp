@@ -552,9 +552,10 @@ int main()
         std::string username = accountDetails[1];
         if(role == "player" )
             {
+                std::cin.ignore();
                 std::string name;
                 std::cout << "What is your name?" << std::endl;
-                std::cin >> name;
+                std::getline(std::cin,name);
 
                 int age;
                 std::cout << "What is your age?" << std::endl;
@@ -602,9 +603,10 @@ int main()
             }
         else if(role == "coach")
             {
+                std::cin.ignore();
                 std::string name;
                 std::cout << "What is your name?" << std::endl;
-                std::cin >> name;
+                std::getline(std::cin,name);
 
                 std::string coachID = "C" + std::to_string(rand() % 10000); // Generate a random coach ID
 

@@ -30,7 +30,7 @@ namespace Coach
             playerJson["role"] = player.getRole();
             playerJson["name"] = player.getName();
             playerJson["age"] = player.getAge();
-            playerJson["position"] = player.getPosition();
+            playerJson["position"] = player.getPositionInt();
             playersJson.push_back(playerJson);
         }
         j["players"] = playersJson;
