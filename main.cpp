@@ -556,14 +556,52 @@ int main()
                 std::string name;
                 std::cout << "What is your name?" << std::endl;
                 std::getline(std::cin,name);
+                while(true)
+                {
+                    if(name.empty())
+                    {
+                        std::cout << "Name cannot be empty. Please enter your name: ";
+                        std::getline(std::cin,name);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
 
                 int age;
                 std::cout << "What is your age?" << std::endl;
                 std::cin >> age;
+                while(true)
+                {
+                    if(std::cin.fail() || age <= 0)
+                    {
+                        std::cin.clear(); // clear the error flag
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                        std::cout << "Invalid input. Please enter a valid age: ";
+                        std::cin >> age;
+                    }
+                    else
+                    {
+                        break; // valid input, exit the loop
+                    }
+                }
 
                 std::string position;
                 std::cout << "What is your position? (FastBowler, Spinner, Batsman, WicketKeeper, FastAllRounder, SpinAllRounder)" << std::endl;
                 std::cin >> position;
+                while(true)
+                {
+                    if(position != "FastBowler" && position != "Spinner" && position != "Batsman" && position != "WicketKeeper" && position != "FastAllRounder" && position != "SpinAllRounder")
+                    {
+                        std::cout << "Invalid position. Please enter a valid position: ";
+                        std::cin >> position;
+                    }
+                    else
+                    {
+                        break; // valid input, exit the loop
+                    }
+                }
 
                 Player::PlayerType playerPosition;
                 if(position == "FastBowler")
