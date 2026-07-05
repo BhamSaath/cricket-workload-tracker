@@ -71,3 +71,4 @@ credentials.txt
 *_data.json
 cricket
 auth_program
+.DS_Store
