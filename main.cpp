@@ -64,7 +64,7 @@ std::vector<std::string> createAccount()
     }
     std::cout << "Enter password: ";
     std::cin >> password;
-    std::cout << "Enter role (admin/coach/player): ";
+    std::cout << "Enter role (coach/player): ";
     std::cin >> role;
 
     // Store the credentials in a file
@@ -87,7 +87,7 @@ int playerDashboard(Player::Player& p)
     while(!backToMainMenu) {
     int actionChoice = 0; 
     std::cout << "Welcome to the Player Dashboard!" << std::endl;
-    std::cout<< "What do you want to do?\n 1. View Sessions\n 2. Add Sessions\n 3. View Plan\n 4.Report Injury\n 5.View Injuries 6.See Profile" << std::endl;
+    std::cout<< "What do you want to do?\n 1. View Sessions\n 2. Add Sessions\n 3. View Plan\n 4.Report Injury\n 5.View Injuries\n 6.See Profile" << std::endl;
     while (true) {
         std::cin >> actionChoice;
         if (std::cin.fail()) {
@@ -271,7 +271,7 @@ int coachDashboard(Coach::Coach& c)
     std::cout << "Welcome to the Coach Dashboard!" << std::endl;
     // Here you can add logic to show the coach dashboard
     int choice;
-    std::cout<< "What do you want to do?\n 1. View Player Details\n 2. View Player Sessions\n 3. View Player Plan\n 4. Mangage Player Plan 5. Remove Player" << std::endl;
+    std::cout<< "What do you want to do?\n 1. View Player Details\n 2. View Player Sessions\n 3. View Player Plan\n 4. Mangage Player Plan\n 5. Remove Player" << std::endl;
     std::cin >> choice;
     if(choice == 1)
     {
