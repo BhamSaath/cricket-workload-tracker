@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "auth.h"
-
+#include "bcrypt.h"
 namespace Auth
 {
     
@@ -20,7 +20,7 @@ namespace Auth
             std::getline(ss, storedPass, ':');
             std::getline(ss, storedRole, ':');
             
-            if(storedUser == username && storedPass == password)
+            if(storedUser == username && storedPass == bcrypt::generateHash(password))
             {
                 return storedRole; // Return the role if authentication is successful
             }

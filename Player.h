@@ -47,8 +47,6 @@ namespace Player
         std::string recoveryTime;
         std::string description;
 
-        void viewPlan();
-        void updateInjuryStatus(std::string newStatus);
     };
     class Session
     {
@@ -57,10 +55,6 @@ namespace Player
         std::string duration;
         SessionType type;
         std::string notes;
-        
-
-        void getSessionDetails();
-        void updateSessionNotes(std::string newNotes);
     };
     class Player: public User::User
     {
